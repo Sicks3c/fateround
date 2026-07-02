@@ -103,6 +103,7 @@ import { clampWhotGameDuration } from '@/lib/whot'
 import { clampCrazyEightsGameDuration } from '@/lib/crazy-eights'
 import { clampBoardGameTurnTimer } from '@/lib/board-game-lobby-settings'
 import { clampWordHuntTimer } from '@/lib/word-hunt'
+import { clampSudokuGameDuration } from '@/lib/sudoku'
 import { clampChessTimer, clampChessBoardTheme, clampChessPieceSet } from '@/lib/chess'
 import { clampCheckersTimer } from '@/lib/checkers'
 import { clampScrabbleTimer, clampScrabbleGameDuration } from '@/lib/scrabble'
@@ -687,7 +688,9 @@ export async function POST(req: NextRequest) {
               crazy8_jokers: rawCrazy8Jokers === true,
               crazy8_pick2_stacking: rawCrazy8Pick2Stacking !== false,
             }
-          : {}),
+          : isSudokuGame(game_type)
+            ? { game_duration_seconds: clampSudokuGameDuration(rawGameDurationSeconds ?? 0) }
+            : {}),
     ...(isCustomGame(game_type) && parsed.data.custom_slots
       ? {
           custom_slots: {
